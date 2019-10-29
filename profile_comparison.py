@@ -10,12 +10,12 @@ import time
 itt = 20
 
 # Input and conv parameters
-B = 1
-P = 3
+B = 2
+P = 20480
 H = 4
 W = 4
-in_channels = 2
-out_channels = 3
+in_channels = 64
+out_channels = 128
 kernel_size = 3
 padding = 1
 stride = 1
