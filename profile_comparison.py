@@ -10,7 +10,7 @@ import time
 itt = 20
 
 # Input and conv parameters
-B = 2
+B = 1
 P = 20480
 H = 4
 W = 4
