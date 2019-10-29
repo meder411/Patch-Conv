@@ -7,7 +7,7 @@ import time
 # Parameters
 # ---------------
 # Number of profile iterations to run
-itt = 20
+itt = 30
 
 # Input and conv parameters
 B = 1
@@ -78,21 +78,35 @@ if cuda:
     x = x.cuda()
     x_sim = x_sim.cuda()
 
+fw_mode = True
 
-def profile_layer(x, layer, itt=10):
+
+def profile_layer(x, layer, itt=30):
     """
     Runs a forward pass on the layer <itt> times and returns the average time
     """
     time_accum = 0.0
     for i in range(itt):
         # Time the forward execution
-        if cuda:
-            torch.cuda.synchronize()
-        s = time.time()
+        if fw_mode:
+            if cuda:
+                torch.cuda.synchronize()
+            s = time.time()
         out = layer(x)
         if cuda:
             torch.cuda.synchronize()
-        e = time.time()
+
+        if fw_mode:
+            e = time.time()
+        else:
+            s = time.time()
+
+            out.sum().backward()
+
+            if cuda:
+                torch.cuda.synchronize()
+            e = time.time()
+
         time_accum += (e - s)
     return time_accum / itt
 
@@ -100,6 +114,61 @@ def profile_layer(x, layer, itt=10):
 # -----------------------
 # Profile the layers
 # -----------------------
+
+torch.backends.cudnn.enabled = False
+print("######################### CUDNN FALSE")
+print('\n')
+print('Various patch convolution methods:')
+print('  Using-unfold avg. time: {:.6f} seconds'.format(
+    profile_layer(x, pmm, itt)))
+print('  Rolled-into-batch avg. time: {:.6f} seconds'.format(
+    profile_layer(x.view(-1, in_channels, H, W), conv, itt)))
+# print('  Custom-patch-im2col avg. time: {:.6f} seconds'.format(
+#     profile_layer(x.transpose(1, 2).contiguous(), patch_conv, itt)))
+
+print('\n')
+print(
+    'Compare to traditional convolution with B x C x H x W inputs with similar number (actually more) of elements:'
+)
+print('  nn.Conv2d: {:.6f} seconds'.format(profile_layer(x_sim, conv)))
+
+torch.backends.cudnn.enabled = True
+torch.backends.cudnn.benchmark = False
+print("######################### CUDNN TRUE")
+print('\n')
+print('Various patch convolution methods:')
+print('  Using-unfold avg. time: {:.6f} seconds'.format(
+    profile_layer(x, pmm, itt)))
+print('  Rolled-into-batch avg. time: {:.6f} seconds'.format(
+    profile_layer(x.view(-1, in_channels, H, W), conv, itt)))
+print('  Custom-patch-im2col avg. time: {:.6f} seconds'.format(
+    profile_layer(x.transpose(1, 2).contiguous(), patch_conv, itt)))
+
+print('\n')
+print(
+    'Compare to traditional convolution with B x C x H x W inputs with similar number (actually more) of elements:'
+)
+print('  nn.Conv2d: {:.6f} seconds'.format(profile_layer(x_sim, conv)))
+
+torch.backends.cudnn.enabled = True
+torch.backends.cudnn.benchmark = True
+print("######################### CUDNN TRUE BENCH")
+print('\n')
+print('Various patch convolution methods:')
+print('  Using-unfold avg. time: {:.6f} seconds'.format(
+    profile_layer(x, pmm, itt)))
+print('  Rolled-into-batch avg. time: {:.6f} seconds'.format(
+    profile_layer(x.view(-1, in_channels, H, W), conv, itt)))
+print('  Custom-patch-im2col avg. time: {:.6f} seconds'.format(
+    profile_layer(x.transpose(1, 2).contiguous(), patch_conv, itt)))
+
+print('\n')
+print(
+    'Compare to traditional convolution with B x C x H x W inputs with similar number (actually more) of elements:'
+)
+print('  nn.Conv2d: {:.6f} seconds'.format(profile_layer(x_sim, conv)))
+
+print("######################### CUDNN TRUE BENCH")
 print('\n')
 print('Various patch convolution methods:')
 print('  Using-unfold avg. time: {:.6f} seconds'.format(
