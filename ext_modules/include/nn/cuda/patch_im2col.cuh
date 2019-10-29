@@ -6,7 +6,7 @@
 #include "cuda_helper.h"
 #include "nn/common/patch_im2col.h"
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace cuda {
 
@@ -92,5 +92,5 @@ void PatchCol2Im2DLauncher(torch::Tensor data_col, const int64_t channels,
 
 }  // namespace cuda
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv
 #endif

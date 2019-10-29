@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace cpu {
 
@@ -161,4 +161,4 @@ torch::Tensor PatchConvBackwardWeight(torch::Tensor grad_output,
 
 }  // namespace cpu
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv

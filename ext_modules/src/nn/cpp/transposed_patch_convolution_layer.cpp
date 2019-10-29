@@ -1,7 +1,7 @@
 #include "nn/layers/transposed_patch_convolution_layer.h"
 #include "nn/cpp/patch_im2col.h"
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace cpu {
 
@@ -153,4 +153,4 @@ torch::Tensor TransposedPatchConvBackwardWeight(
 
 }  // namespace cpu
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv

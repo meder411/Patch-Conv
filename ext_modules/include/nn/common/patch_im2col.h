@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace common {
 
@@ -136,5 +136,5 @@ __host__ __device__ void PatchCol2Im2D(
 
 }  // namespace common
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv
 #endif

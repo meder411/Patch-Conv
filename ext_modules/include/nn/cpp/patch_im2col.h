@@ -6,7 +6,7 @@
 
 #include "nn/common/patch_im2col.h"
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace cpu {
 
@@ -57,5 +57,5 @@ void PatchCol2Im2D(const int64_t num_kernels, torch::Tensor data_col,
 
 }  // namespace cpu
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv
 #endif

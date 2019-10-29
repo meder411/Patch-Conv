@@ -6,7 +6,7 @@
 
 #include "cuda_helper.h"
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -139,14 +139,14 @@ std::vector<torch::Tensor> TransposedPatchConvBackward(
 }
 
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("transposed_patch_conv_forward",
-        &mapped_conv::nn::TransposedPatchConvForward,
+        &patch_conv::nn::TransposedPatchConvForward,
         "Forward transposed convolution");
   m.def("transposed_patch_conv_backward",
-        &mapped_conv::nn::TransposedPatchConvBackward,
+        &patch_conv::nn::TransposedPatchConvBackward,
         "Backward transposed convolution");
 }
 

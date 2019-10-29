@@ -9,7 +9,7 @@
 
 #include "nn/cuda/patch_im2col.cuh"
 
-namespace mapped_conv {
+namespace patch_conv {
 namespace nn {
 namespace cuda {
 
@@ -206,4 +206,4 @@ torch::Tensor TransposedPatchConvBackwardWeight(torch::Tensor grad_output,
 
 }  // namespace cuda
 }  // namespace nn
-}  // namespace mapped_conv
+}  // namespace patch_conv
