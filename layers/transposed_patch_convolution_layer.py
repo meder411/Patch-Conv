@@ -3,7 +3,7 @@ import torch.nn as nn
 
 import math
 
-import _mapped_convolution_ext._transposed_patch_convolution as transposed_patch_conv
+import _patch_convolution_ext._transposed_patch_convolution as transposed_patch_conv
 from .layer_utils import _pair
 
 
