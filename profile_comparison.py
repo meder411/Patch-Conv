@@ -7,7 +7,7 @@ import time
 # Parameters
 # ---------------
 # Number of profile iterations to run
-itt = 3
+itt = 20
 
 # Input and conv parameters
 B = 1
@@ -20,7 +20,7 @@ kernel_size = 3
 padding = 1
 stride = 1
 dilation = 1
-cuda = False
+cuda = True
 
 # --------------------
 # Layers to compare
@@ -60,13 +60,17 @@ conv.bias.data = bias
 patch_conv.weight.data = weight
 patch_conv.bias.data = bias
 
+# ---------------------
 # Create inputs
+# ---------------------
+# Batches of patches input (B x P x C x H x W)
 x = torch.arange(1 * P * 1 * H * W).view(1, P, 1, H,
                                          W).repeat(B, 1, in_channels, 1,
                                                    1).double()
+# Standard input format (B x C x H x W) with a similar (actually greater) number of total elements
 x_sim = torch.rand(B, in_channels, 600, 600).double()
 
-# Put on GPU if possible
+# Put on GPU if desired
 if cuda:
     pmm = pmm.cuda()
     patch_conv = patch_conv.cuda()
@@ -93,12 +97,16 @@ def profile_layer(x, layer, itt=10):
     return time_accum / itt
 
 
+# -----------------------
+# Profile the layers
+# -----------------------
 print('\n')
 print('Various patch convolution methods:')
-print('  Using-unfold time: {:.6f} seconds'.format(profile_layer(x, pmm, itt)))
-print('  Rolled-into-batch time: {:.6f} seconds'.format(
+print('  Using-unfold avg. time: {:.6f} seconds'.format(
+    profile_layer(x, pmm, itt)))
+print('  Rolled-into-batch avg. time: {:.6f} seconds'.format(
     profile_layer(x.view(-1, in_channels, H, W), conv, itt)))
-print('  Custom-patch-im2col time: {:.6f} seconds'.format(
+print('  Custom-patch-im2col avg. time: {:.6f} seconds'.format(
     profile_layer(x.transpose(1, 2).contiguous(), patch_conv, itt)))
 
 print('\n')
